@@ -1,10 +1,23 @@
-name: Copy index file to the clients
-      ansible.builtin.copy:
-        src: index.html
-        dest: /var/www/html/index.html
-play2
+# Ansible Playbook for Deploying Apache Webserver on Ubuntu Clients
 
-name: Deploy Apache webserver on Ubuntu clients
+## Overview
+
+This playbook deploys the Apache webserver on Ubuntu clients. It updates all packages on the server, installs the Apache web server, ensures the service is started and enabled, and copies a specified index file to the clients.
+
+## Playbook Content
+
+**Playbook Name:** `deploy_apache.yml`
+
+**Description:** This playbook performs the following tasks:
+1. Updates all packages on the Ubuntu clients.
+2. Installs the Apache web server.
+3. Starts the Apache service and ensures it is enabled to start on boot.
+4. Copies an `index.html` file to the web server directory on the clients.
+
+### Playbook
+
+```yaml
+- name: Deploy Apache webserver on Ubuntu clients
   hosts: ubuntu_clients
   vars:
     package: "apache2"
@@ -35,75 +48,25 @@ name: Deploy Apache webserver on Ubuntu clients
       ansible.builtin.copy:
         src: index.html
         dest: /var/www/html/index.html
-        play3
-name: Install Git on Ubuntu clients
-  hosts: ubuntu_clients
-  become: yes
-  tasks:
-    - name: Install Git
-      ansible.builtin.apt:
-        name: git
-        state: latest
-play4
+Instructions for Use
+Save the Playbook:
 
-- name: Display my name on all hosts
-  hosts: all
-  vars:
-    student_name: "Bo Lontum"
-  tasks:
-  - name: Display a name of a student
-      ansible.builtin.debug:
-        msg: "The student name is: {{ student_name }}"
+Create a file named deploy_apache.yml and paste the content above into it.
+Prepare Your Environment:
 
+Ensure that you have Ansible installed and configured.
+Place your index.html file in the same directory as the playbook or specify the correct path.
+Run the Playbook:
 
+Execute the playbook with the following command:
+bash
+Copy code
+ansible-playbook deploy_apache.yml
+
+Additional Notes
+Variables: The package variable is set to "apache2" by default. You can change this value to install a different package if needed.
+Permissions: The playbook uses become: yes to run tasks with elevated privileges. Ensure that the Ansible user has the necessary sudo permissions on the target hosts.
+For more information on Ansible playbooks and their configuration, refer to the Ansible Documentation.
 
 
-
-The above is just one playbook. playbook is made up of Name,hosts and task.
-log back to the controller as the root user:
-sudo -i
-mkdir web
-cd web
-vi index.html
-put a message eg, deploy apache:
-ls -l
-copy template and paste it in apache-playbook.yml:
-vi apache-playbook.yml
-paste
-:wq! enter
-Run the play-book:
-pwd: should be root@... controller:-/web#
-ansible-playbook apache-playbook.yml
-
-To start the service:
-vi apache-playbook.yml
-go to file and edit the task start service to stopped service: service will stop
-
-ansible-playbook apache-playbook.yml
-
-
-displaying VARIABLE INLINE: example "play"
-
----
-name: Display my name on all hosts
-  hosts: all
-  vars:
-    student_name: "Bo Lontum"
-  tasks:
-    - name: Display a name of a student
-      ansible.builtin.debug:
-        msg: "The student name is: {{ student_name }}"
-
-name: Display my name on all hosts
-  hosts: all
-  vars:
-    package: "httpd"
-  tasks:
-    - name: Display a name of a httpd
-      ansible.builtin.httpd:
-        msg: "The student name is: {{ package }}"
-
- use a separete file for defining variables for security purposes:
-
- vars_files:
-    - variable.yml # create this file while in web folder, and define it value. eg. package: "httpd" of pakage:"apache2"
+Feel free to adjust the instructions and notes according to your specific needs or environment.
