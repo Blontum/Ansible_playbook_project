@@ -1,0 +1,53 @@
+#play1
+- name: Deploy Apache webserver on Ubuntu clients
+  hosts: ubuntu_clients
+  vars_files:
+    - variables.yml
+  become: yes
+  tasks:
+    - name: Update all packages on the server
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Apache web server
+      ansible.builtin.apt:
+        name: "{{ package }}"
+        state: latest
+
+    - name: Start Apache service
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: Enable Apache to start on boot
+      ansible.builtin.service:
+        name: apache2
+        enabled: true
+
+    - name: Copy index file to the clients
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+
+#play2
+- name: Install Git on Ubuntu clients
+  hosts: ubuntu_clients
+  become: yes
+  tasks:
+    - name: Install Git
+      ansible.builtin.apt:
+        name: git
+        state: latest
+
+#play3
+- name: Display my name on all hosts
+  hosts: all
+  vars:
+    student_name: "Bo Lontum"
+  tasks:
+    - name: Display a name of a student
+      ansible.builtin.debug:
+        msg: "The student name is: {{ student_name }}"
+
